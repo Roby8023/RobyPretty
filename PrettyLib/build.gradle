@@ -38,7 +38,7 @@ buildscript {
 // result: 'groupId.artifactId:publishVersion'
 publish {
     userOrg = 'roby8023'
-    groupId = 'com.roby.pretty'
+    groupId = 'com.roby'
     artifactId = 'pretty'
     publishVersion = '1.0.0'
     desc = 'love u all~ 2020-04-25 12:02:22'
