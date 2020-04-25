@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.novoda.bintray-release' // for release
 
 android {
     compileSdkVersion 29
@@ -23,6 +24,25 @@ android {
         }
     }
 
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.9.2'
+    }
+}
+
+// result: 'groupId.artifactId:publishVersion'
+publish {
+    userOrg = 'Roby8023'
+    groupId = 'com.roby.pretty'
+    artifactId = 'pretty'
+    publishVersion = '1.0.0'
+    desc = 'love u all~ 2020-04-25 12:02:22'
+    website = 'https://github.com/Roby8023/RobyPretty'
 }
 
 dependencies {
