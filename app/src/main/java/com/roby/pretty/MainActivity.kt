@@ -11,5 +11,11 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         showToast("Love U ~ 🍬")
         DebugLog.e("Pretty Roby 🍬")
+
+        testThreadJoinFunction()
+    }
+
+    private fun testThreadJoinFunction() {
+
     }
 }

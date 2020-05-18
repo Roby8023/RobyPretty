@@ -1,3 +1,4 @@
 rootProject.name='RobyPretty'
 include ':app'
 include ':PrettyLib'
+include ':JavaPretty'
