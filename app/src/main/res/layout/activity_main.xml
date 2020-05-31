@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:normalBg="@color/pewter"
         app:selectedBg="@color/red"
-        app:statusImage="@drawable/general_password_check"
+        app:statusImage="@drawable/check"
         app:totalStep="4" />
 
     <TextView
