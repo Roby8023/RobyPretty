@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RequestStatusView">
+        <attr name="statusImage" format="reference" />
+        <attr name="totalStep" format="integer" />
+        <attr name="currentStep" format="integer" />
+        <attr name="normalBg" format="color" />
+        <attr name="selectedBg" format="color" />
+        <attr name="android:tint" format="color" />
+    </declare-styleable>
+</resources>

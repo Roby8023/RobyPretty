@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.roby.pretty"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -37,4 +37,6 @@ dependencies {
 
 //    implementation project(':PrettyLib')
     implementation 'com.roby.pretty:pretty:1.0.0'
+    // Kotlin coroutine
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1'
 }
