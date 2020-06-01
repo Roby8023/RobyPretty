@@ -2,10 +2,7 @@ package com.roby.pretty.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.text.Layout
 import android.text.StaticLayout
@@ -41,10 +38,10 @@ class RequestStatusView @JvmOverloads constructor(
     private var currentStep: Int = 1 // 当前step数
     private var normalBg: Int = Color.BLUE //未选中Line背景
     private var selectedBg: Int = Color.CYAN // 选中Line画笔
-    private var pointRadius: Float = 20F // 未选中Point半径
-    private val viewYPosition = 120F // 控件中心线在Y轴高度
+    private var pointRadius: Float = 10F // 未选中Point半径
+    private val viewYPosition = 50F // 控件中心线在Y轴高度
     private val statusViewConfig = 36 // Status icon尺寸
-    private val lineWidth = 10F // 线宽度
+    private val lineWidth = 5F // 线宽度
     private val textYPosition = viewYPosition + 22.dpToPx() // 文字Y轴位置
     private var statusIconBitmap: Bitmap? = null // statusImage 转换过来的 Bitmap
     private var stepOneText = "step 1" // step 1 文字
@@ -52,6 +49,7 @@ class RequestStatusView @JvmOverloads constructor(
     private var stepThreeText = "step 3" // step 3 文字
     private var layout: StaticLayout? = null
     private var textColor = "#0000ff"
+    private var tintColor: Int = 0
 
     init {
         processAttributes(attrs, defStyleAttr)
@@ -75,31 +73,35 @@ class RequestStatusView @JvmOverloads constructor(
 
         textPaint.color = Color.parseColor(textColor)
         textPaint.isAntiAlias = true
-        textPaint.textSize = 16.dpToPx().toFloat()
+        textPaint.textSize = 14.dpToPx().toFloat()
         textPaint.textAlign = Paint.Align.CENTER
+//        textPaint.
     }
 
     private fun processAttributes(attrs: AttributeSet?, defStyleRes: Int) {
-        val mTypeArray =
-            context.obtainStyledAttributes(attrs, R.styleable.RequestStatusView, 0, defStyleRes)
-        statusImage = mTypeArray.getDrawable(R.styleable.RequestStatusView_statusImage)
-        totalStep = mTypeArray.getInt(R.styleable.RequestStatusView_totalStep, 3)
-        currentStep = mTypeArray.getInt(R.styleable.RequestStatusView_currentStep, 1)
-        normalBg = mTypeArray.getColor(R.styleable.RequestStatusView_normalBg, Color.BLUE)
-        selectedBg = mTypeArray.getColor(R.styleable.RequestStatusView_selectedBg, Color.YELLOW)
-        stepOneText = mTypeArray.getString(R.styleable.RequestStatusView_stepOneText).orEmpty()
-        stepTwoText = mTypeArray.getString(R.styleable.RequestStatusView_stepTwoText).orEmpty()
-        stepThreeText = mTypeArray.getString(R.styleable.RequestStatusView_stepThreeText).orEmpty()
-        setIconTintColor(
-            mTypeArray.getColor(
-                R.styleable.RequestStatusView_android_tint,
-                Color.CYAN
-            )
-        )
-        mTypeArray.recycle()
+        context.obtainStyledAttributes(attrs, R.styleable.RequestStatusView, 0, defStyleRes).apply {
+            statusImage = getDrawable(R.styleable.RequestStatusView_statusImage)
+            totalStep = getInt(R.styleable.RequestStatusView_totalStep, 3)
+            currentStep = getInt(R.styleable.RequestStatusView_currentStep, 1)
+            normalBg = getColor(R.styleable.RequestStatusView_normalBg, Color.BLUE)
+            selectedBg = getColor(R.styleable.RequestStatusView_selectedBg, Color.YELLOW)
+            stepOneText = getString(R.styleable.RequestStatusView_stepOneText).orEmpty()
+            stepTwoText = getString(R.styleable.RequestStatusView_stepTwoText).orEmpty()
+            stepThreeText = getString(R.styleable.RequestStatusView_stepThreeText).orEmpty()
+            tintColor = getColor(R.styleable.RequestStatusView_android_tint, 0)
+            setIconTintColor(getColor(R.styleable.RequestStatusView_android_tint, 0))
+//        setIconTintColor(
+//                mTypeArray.getColor(
+//                        R.styleable.RequestStatusView_android_tint,
+//                        0
+//                )
+//        )
+            recycle()
+        }
     }
 
     private fun setIconTintColor(@ColorInt tint: Int) {
+        Log.e("RobyFlag", "tint: $tint")
         statusImage?.let { drawable ->
             tint.takeUnless { it == 0 }
                 ?.let { DrawableCompat.setTint(drawable, it) }
@@ -132,7 +134,6 @@ class RequestStatusView @JvmOverloads constructor(
         canvas?.restore()//别忘了restore
 
         for (index in 0 until totalStep - 1) {
-            Log.e("RobyFlag", "for循环 $index")
             canvas?.drawLine(
                 viewStartPoint + viewChildLineLength * index, // + pointRadius.halfOf().toFloat(),  // view起点坐标 + point半径
                 viewYPosition,
@@ -153,7 +154,12 @@ class RequestStatusView @JvmOverloads constructor(
                     0 -> stepTwoText
                     1 -> stepThreeText
                     else -> "666"
-                }, textPaint, 300,
+                }, textPaint,
+                when (index) {
+                    0 -> 600
+                    1 -> 300
+                    else -> 300
+                },
                 Layout.Alignment.ALIGN_NORMAL, 1F, 0.0F, true
             )
             canvas?.save()
@@ -172,7 +178,6 @@ class RequestStatusView @JvmOverloads constructor(
             1 -> {
                 // draw the pic on the first step, and no need to draw line bg
                 statusImage?.let {
-                    Log.e("RobyFlag", "step 1, pic ok")
                     // for switching app
                     if (statusIconBitmap?.isRecycled == true) {
                         statusIconBitmap = statusImage?.toBitmap(
@@ -197,7 +202,6 @@ class RequestStatusView @JvmOverloads constructor(
                         )
                     }
                 } ?: run {
-                    Log.e("RobyFlag", "step 1, empty pic")
                 }
             }
             else -> {
@@ -208,9 +212,7 @@ class RequestStatusView @JvmOverloads constructor(
                     pointRadius,
                     selectedPaint
                 )
-                Log.e("RobyFlag", ">> currentStep: $currentStep")
                 for (index in 0 until currentStep - 1) {
-                    Log.e("RobyFlag", "画图片 for循环 $index")
                     canvas?.drawLine(
                         viewStartPoint + viewChildLineLength * index, // + pointRadius.halfOf().toFloat(),  // view起点坐标 + point半径
                         viewYPosition,
@@ -220,7 +222,6 @@ class RequestStatusView @JvmOverloads constructor(
                     )
                     // 最后一次循环时画picture, 其余画point
                     if (index == currentStep - 2) {
-                        Log.e("RobyFlag", "画图片  ==-1")
                         canvas?.drawCircle(
                             viewStartPoint + viewChildLineLength * (index + 1),
                             viewYPosition,
@@ -228,7 +229,6 @@ class RequestStatusView @JvmOverloads constructor(
                             whitePaint
                         )
                         statusImage?.let {
-                            Log.e("RobyFlag", "画图片  pic ok")
                             // for switching app
                             if (statusIconBitmap?.isRecycled == true) {
                                 statusIconBitmap = statusImage?.toBitmap(
@@ -239,6 +239,7 @@ class RequestStatusView @JvmOverloads constructor(
                             statusIconBitmap?.let {
 //                                val iconBitWidth = it.width.toFloat() ?: 100F
                                 val iconBitHeight = it.height.toFloat()
+                                selectedPaint.colorFilter = ColorFilter()
                                 canvas?.drawBitmap(
                                     it,
                                     viewStartPoint + viewChildLineLength * (index + 1) - statusViewConfig.dpToPx() / 2,
@@ -247,10 +248,8 @@ class RequestStatusView @JvmOverloads constructor(
                                 )
                             }
                         } ?: run {
-                            Log.e("RobyFlag", "画图片   empty pic")
                         }
                     } else {
-                        Log.e("RobyFlag", "画图片  !=-1")
                         canvas?.drawCircle(
                             viewStartPoint + viewChildLineLength * (index + 1),
                             viewYPosition,

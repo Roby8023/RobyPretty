@@ -8,4 +8,6 @@
     <color name="info">#1A4875</color>
     <color name="pewter">#767676</color>
     <color name="primary">#DB0011</color>
+    <color name="gray_status_normal_bg">#FF8B8B8B</color>
+    <color name="gray_status_selected_bg">#FF142F57</color>
 </resources>
