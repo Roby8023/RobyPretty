@@ -6,6 +6,9 @@
         <attr name="currentStep" format="integer" />
         <attr name="normalBg" format="color" />
         <attr name="selectedBg" format="color" />
+        <attr name="stepOneText" format="string|reference" />
+        <attr name="stepTwoText" format="string|reference" />
+        <attr name="stepThreeText" format="string|reference" />
         <attr name="android:tint" format="color" />
     </declare-styleable>
 </resources>
