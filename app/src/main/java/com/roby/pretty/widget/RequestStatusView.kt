@@ -9,11 +9,8 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import androidx.annotation.ColorInt
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.roby.pretty.R
 import com.roby.pretty.ext.dpToPx
@@ -89,22 +86,7 @@ class RequestStatusView @JvmOverloads constructor(
             stepTwoText = getString(R.styleable.RequestStatusView_stepTwoText).orEmpty()
             stepThreeText = getString(R.styleable.RequestStatusView_stepThreeText).orEmpty()
             tintColor = getColor(R.styleable.RequestStatusView_android_tint, 0)
-            setIconTintColor(getColor(R.styleable.RequestStatusView_android_tint, 0))
-//        setIconTintColor(
-//                mTypeArray.getColor(
-//                        R.styleable.RequestStatusView_android_tint,
-//                        0
-//                )
-//        )
             recycle()
-        }
-    }
-
-    private fun setIconTintColor(@ColorInt tint: Int) {
-        Log.e("RobyFlag", "tint: $tint")
-        statusImage?.let { drawable ->
-            tint.takeUnless { it == 0 }
-                ?.let { DrawableCompat.setTint(drawable, it) }
         }
     }
 
@@ -195,7 +177,7 @@ class RequestStatusView @JvmOverloads constructor(
                             whitePaint
                         )
                         canvas?.drawBitmap(
-                            it,
+                            tintBitmap(statusIconBitmap, tintColor),
                             viewStartPoint - iconBitWidth / 2,
                             viewYPosition - iconBitHeight / 2,
                             selectedPaint
@@ -241,7 +223,7 @@ class RequestStatusView @JvmOverloads constructor(
                                 val iconBitHeight = it.height.toFloat()
                                 selectedPaint.colorFilter = ColorFilter()
                                 canvas?.drawBitmap(
-                                    it,
+                                    tintBitmap(statusIconBitmap, tintColor),
                                     viewStartPoint + viewChildLineLength * (index + 1) - statusViewConfig.dpToPx() / 2,
                                     viewYPosition - iconBitHeight / 2,
                                     selectedPaint
@@ -269,5 +251,19 @@ class RequestStatusView @JvmOverloads constructor(
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         return displayMetrics.widthPixels.toFloat()
+    }
+
+    private fun tintBitmap(inBitmap: Bitmap?, tintColor: Int): Bitmap {
+        inBitmap?.let {
+            val outBitmap =
+                Bitmap.createBitmap(inBitmap.width, inBitmap.height, inBitmap.config)
+            val canvas = Canvas(outBitmap)
+            val paint = Paint()
+            paint.colorFilter = PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
+            canvas.drawBitmap(inBitmap, 0F, 0F, paint)
+            return outBitmap
+        } ?: kotlin.run {
+            return statusIconBitmap!!
+        }
     }
 }
